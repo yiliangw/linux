@@ -1,4 +1,4 @@
-config CXL_MEM
+config CXL_DMSIM_MEM
 tristate "cxl_mem driver"
 help
   A driver for cxl type3 device in gem5.

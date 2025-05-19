@@ -56,7 +56,7 @@ static int device_mmap(struct file *fp, struct vm_area_struct *vma)
     struct cxl_mem *p;
     int ret = 0;
     p = fp->private_data;
-    vma->vm_flags |= VM_IO | VM_SHARED | VM_DONTEXPAND | VM_DONTDUMP; // reserved memory area
+    vm_flags_set(vma, VM_IO | VM_SHARED | VM_DONTEXPAND | VM_DONTDUMP); // reserved memory area
     if(mutex_lock_interruptible(&p->mtx))   //-EINTR
 		return -ERESTARTSYS;
     /* Call the memory allocation function, returning the starting address of the allocated contiguous space */
@@ -179,7 +179,7 @@ static int pci_device_probe(struct pci_dev *pdev, const struct pci_device_id *id
         return result;
     }
      /* 4. Create a device node under /dev */
-    cxl_memP->cxl_mem_class = class_create(THIS_MODULE, "cxl_mem_class");
+    cxl_memP->cxl_mem_class = class_create("cxl_mem_class");
     if (IS_ERR(cxl_memP->cxl_mem_class))
     {
         printk(KERN_ERR "class_create()failed\n");
@@ -216,9 +216,7 @@ static struct pci_driver pci_driver = {
 static int __init cxl_mem_init(void)
 {
     printk("The cxl_mem driver module has been initialized successfully!\n");
-    pci_register_driver(&pci_driver);
-
-    return 0;
+    return pci_register_driver(&pci_driver);
 }
 /**
  * 1. Unregister device numbers
