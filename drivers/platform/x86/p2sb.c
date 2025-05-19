@@ -142,7 +142,7 @@ static int p2sb_cache_resources(void)
 	 * PCI_CLASS_MEMORY_OTHER for P2SB, do not touch it.
 	 */
 	pci_bus_read_config_word(bus, devfn_p2sb, PCI_CLASS_DEVICE, &class);
-	if (!PCI_POSSIBLE_ERROR(class) && class != PCI_CLASS_MEMORY_OTHER)
+	if (PCI_POSSIBLE_ERROR(class) || class != PCI_CLASS_MEMORY_OTHER)
 		return -ENODEV;
 
 	/*
